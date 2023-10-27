@@ -27,21 +27,21 @@ public class CTEnvironment {
     @ZenCodeType.Method
     public CTEnvironment addCategory (String category) {
 
-        this.data.getEnvironments().add(category);
+        this.data.getCategories().add(category);
         return this;
     }
 
     @ZenCodeType.Method
     public CTEnvironment removeCategory (String category) {
 
-        this.data.getEnvironments().remove(category);
+        this.data.getCategories().remove(category);
         return this;
     }
 
     @ZenCodeType.Method
     public CTEnvironment clearCategories () {
 
-        this.data.getEnvironments().clear();
+        this.data.getCategories().clear();
         return this;
     }
 

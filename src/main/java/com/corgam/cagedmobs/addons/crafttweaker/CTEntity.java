@@ -32,19 +32,19 @@ public class CTEntity {
 
     @ZenCodeType.Method
     public CTEntity addEnvironment(String env){
-        this.data.getValidEnvs().add(env);
+        this.data.getEnvironments().add(env);
         return this;
     }
 
     @ZenCodeType.Method
     public CTEntity removeEnvironment(String env){
-        this.data.getValidEnvs().remove(env);
+        this.data.getEnvironments().remove(env);
         return this;
     }
 
     @ZenCodeType.Method
     public CTEntity clearEnvironments(){
-        this.data.getValidEnvs().clear();
+        this.data.getEnvironments().clear();
         return this;
     }
 

@@ -363,8 +363,8 @@ public class MobCageBlockEntity extends BlockEntity {
             return false;
         }
         if(this.environmentData != null){
-            for(String env : this.environmentData.getEnvironments()){
-                if(recipe.getValidEnvs().contains(env)){
+            for(String env : this.environmentData.getCategories()){
+                if(recipe.getEnvironments().contains(env)){
                     return true;
                 }
             }

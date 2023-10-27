@@ -80,8 +80,8 @@ public class RecipesHelper {
     }
 
     public static boolean isEnvValidForEntity(EntityData entity, EnvironmentData env) {
-        for(String s : entity.getValidEnvs()){
-            for(String s2 : env.getEnvironments()){
+        for(String s : entity.getEnvironments()){
+            for(String s2 : env.getCategories()){
                 if(s.matches(s2)){
                     return true;
                 }
