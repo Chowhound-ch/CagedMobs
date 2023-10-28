@@ -19,12 +19,12 @@ import java.util.Set;
 
 public class EnvironmentData implements Recipe<Inventory> {
 
-    private ItemStack inputItem;
+    private Ingredient inputItem;
     private BlockState renderState;
     private float growModifier;
     private final List<String> categories;
 
-    public EnvironmentData(ItemStack item, BlockState renderState, float growModifier, List<String> categories){
+    public EnvironmentData(Ingredient item, BlockState renderState, float growModifier, List<String> categories){
         this.inputItem = item;
         this.renderState = renderState;
         this.growModifier = growModifier;
@@ -65,7 +65,7 @@ public class EnvironmentData implements Recipe<Inventory> {
         return CagedRecipeTypes.ENVIRONMENT_RECIPE.get();
     }
 
-    public ItemStack getInputItem() {
+    public Ingredient getInputItem() {
         return inputItem;
     }
 
@@ -89,7 +89,7 @@ public class EnvironmentData implements Recipe<Inventory> {
         this.renderState = state;
     }
 
-    public void setInputItem(ItemStack item) {
+    public void setInputItem(Ingredient item) {
         this.inputItem = item;
     }
 

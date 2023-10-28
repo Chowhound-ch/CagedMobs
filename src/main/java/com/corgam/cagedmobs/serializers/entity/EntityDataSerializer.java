@@ -5,33 +5,42 @@ import com.corgam.cagedmobs.serializers.SerializationHelper;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.DataResult;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraftforge.common.crafting.conditions.ICondition;
+import net.minecraftforge.common.crafting.conditions.ModLoadedCondition;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 
 public class EntityDataSerializer implements RecipeSerializer<EntityData> {
 
-    public static final Codec<EntityData> CODEC =  RecordCodecBuilder.create((entityDataInstance) -> entityDataInstance.group(
-            // EntityID
-            ResourceLocation.CODEC.fieldOf("entity").orElse(new ResourceLocation("pig")).forGetter(EntityData::getEntityID),
-            // Environments
-            Codec.list(Codec.STRING).fieldOf("environments").orElse(new ArrayList<>()).forGetter(EntityData::getEnvironments),
-            // Grow ticks
-            Codec.INT.fieldOf("growTicks").orElse(0).forGetter(EntityData::getTotalGrowTicks),
-            // Requires water
-            Codec.BOOL.fieldOf("requiresWater").orElse(false).forGetter(EntityData::ifRequiresWater),
-            // Loot data
-            Codec.list(LootData.CODEC).fieldOf("results").orElse(new ArrayList<>()).forGetter(EntityData::getResults),
-            // Tier
-            Codec.INT.fieldOf("samplerTier").orElse(1).forGetter(EntityData::getSamplerTier)
-    ).apply(entityDataInstance, EntityData::new));
+    public static final Codec<EntityData> CODEC =  RecordCodecBuilder.create((entityDataInstance) -> entityDataInstance
+            .group(
+                    // EntityID
+                    ResourceLocation.CODEC.fieldOf("entity").forGetter(EntityData::getEntityID),
+                    // Environments
+                    Codec.list(Codec.STRING).fieldOf("environments").orElse(new ArrayList<>()).forGetter(EntityData::getEnvironments),
+                    // Grow ticks
+                    Codec.INT.flatXmap(growTicks -> growTicks > 0 ? DataResult.success(growTicks) : DataResult.error(() -> "EntityData recipe has an invalid growth tick. It must use a positive integer ( growTicks > 0)."), DataResult::success)
+                            .fieldOf("growTicks")
+                            .forGetter(EntityData::getTotalGrowTicks),
+                    // Requires water
+                    Codec.BOOL.fieldOf("requiresWater").orElse(false).forGetter(EntityData::ifRequiresWater),
+                    // Loot data
+                    Codec.list(LootData.CODEC).fieldOf("results").orElse(new ArrayList<>()).forGetter(EntityData::getResults),
+                    // Tier
+                    Codec.INT.flatXmap(tier -> (tier >= 1 && tier <= 3) ? DataResult.success(tier) : DataResult.error(() -> "EntityData recipe has an invalid sampler tier. It must use tiers: 1,2 or 3."), DataResult::success)
+                            .fieldOf("samplerTier")
+                            .forGetter(EntityData::getSamplerTier)
+            ).apply(entityDataInstance, EntityData::new));
 
     @Override
     public Codec<EntityData> codec() {
