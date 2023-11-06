@@ -1,6 +1,9 @@
 buildscript {
     repositories {
+        mavenLocal()
+        maven { url = 'https://maven.minecraftforge.net' }
         maven { url = 'https://files.minecraftforge.net/maven' }
+
         mavenCentral()
     }
     dependencies {
@@ -94,27 +97,36 @@ minecraft {
 }
 // Additional compatible mods
 repositories {
-    maven { // JEI
+    maven { url 'https://api.modrinth.com/maven' }
+    maven {
+        // url of the maven that hosts Aquacultures files
+        url ="http://girafi.dk/maven/"
+    }
+    // JEI Maven
+    maven {
         name = "Progwml6 maven"
         url = "https://dvs1.progwml6.com/files/maven/"
     }
+    // JEI Backup Maven
     maven {
-        // location of a maven mirror for JEI files, as a fallback
         name = "ModMaven"
-        url = "https://modmaven.k-4u.nl"
+        url = "https://modmaven.dev"
     }
-    maven { url "https://maven.tehnut.info" }
-    maven { // TOP
-        name 'tterrag maven'
-        url "http://maven.tterrag.com/"
-    }
+    // TOP Maven
     maven {
-        name = "CraftTweaker"
-        url "https://maven.blamejared.com"
+        url "https://maven.k-4u.nl"
     }
+    // Curse Maven
     maven {
-        name = "Aquaculture2"
-        url "http://girafi.dk/maven/"
+        url "https://www.cursemaven.com"
+        content {
+            includeGroup "curse.maven"
+        }
+    }
+    // Craft Tweaker
+    maven {
+        url = 'https://maven.blamejared.com'
+        name = 'BlameJared Maven'
     }
 }
 
@@ -125,14 +137,14 @@ dependencies {
     minecraft 'net.minecraftforge:forge:1.16.5-36.1.0'
 
     //Aquaculture2 (Helps with debugging mod entities. Thanks!)
-    compile fg.deobf("com.teammetallurgy.aquaculture:aquaculture2_1.16.5:1.16.5-2.1.16")
+    compile fg.deobf("com.teammetallurgy.aquaculture:aquaculture2_1.16.5:1.16.5-2.1.16.1")
 
     // JEI
     compileOnly fg.deobf("mezz.jei:jei-1.16.5:7.6.1.75:api")
     runtimeOnly fg.deobf("mezz.jei:jei-1.16.5:7.6.1.75")
 
     // HWYLA
-    compileOnly fg.deobf("mcp.mobius.waila:Hwyla:1.10.11-B78_1.16.2:api")
+//    compileOnly fg.deobf("mcp.mobius.waila:Hwyla:1.10.11-B78_1.16.2:api")
     // At runtime, use the full Hwyla jar
     runtimeOnly fg.deobf("mcp.mobius.waila:Hwyla:1.10.11-B78_1.16.2")
 
