@@ -1,12 +1,4 @@
 # CagedMobs
-Welcome to Caged Mobs repository!
-Feel free to post a new issue if you have found a bug or you want to make a feature request!
-You can also do the same on my official [Discord server](https://discord.com/invite/V4ezDH45SZ)! Join it for discussion and to share feedback, ideas and datapacks!
-
-For more info about the mod visit curseforge page: https://www.curseforge.com/minecraft/mc-mods/caged-mobs
-
-- Go to [Modpacks support (Configs)](https://github.com/Corgam/CagedMobs/wiki/Modpacks-support-and-configs) wiki page if you want to modify or balance CagedMobs to include it in your modpack or you want to change some config values for customized game experience.
-
-- Go to [CraftTweaker support](https://github.com/Corgam/CagedMobs/wiki/CraftTweaker-support) wiki page if you want to use CraftTweaker mod to modify existing recipes from CagedMobs or add your own ones.
-
-- Go to [Datapack support](https://github.com/Corgam/CagedMobs/wiki/Datapack-support) wiki page if you want to add CagedMobs support for your mod or you want to create your own datapack with CagedMob's recipes.
+forked from [Corgam/CagedMobs](https://github.com/Corgam/CagedMobs)
+* 新增右键生物提取DNA(避免攻击生物)
+* 新增右键指定方块获取指定生物DNA(部分整合包中会有模组冲突导致无法攻击/右键末影龙等问题,故以指定方块代替)
