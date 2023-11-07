@@ -4,16 +4,23 @@ import com.corgam.cagedmobs.serializers.RecipesHelper;
 import com.corgam.cagedmobs.serializers.SerializationHelper;
 import com.corgam.cagedmobs.serializers.mob.MobData;
 import com.corgam.cagedmobs.tileEntities.MobCageTE;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.passive.SheepEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.*;
+import net.minecraft.item.DyeColor;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.ItemUseContext;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.*;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.ActionResultType;
+import net.minecraft.util.Hand;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
@@ -27,6 +34,33 @@ import java.util.List;
 public class DnaSamplerItem extends Item {
     public DnaSamplerItem(Properties properties) {
         super(properties);
+    }
+    // 右键提取
+    @Override
+    public ActionResultType interactLivingEntity(ItemStack stack, PlayerEntity player, LivingEntity target, Hand hand) {
+        if(target.level.isClientSide()) return ActionResultType.FAIL;
+        return recordDNA(stack, target, player, hand)? ActionResultType.SUCCESS : ActionResultType.FAIL;
+    }
+
+    // 右键末地石获得末影龙dna
+    @Override
+    public ActionResultType useOn(ItemUseContext context) {
+        BlockState blockState = context.getLevel().getBlockState(context.getClickedPos());
+        ItemStack stack = context.getItemInHand();
+        PlayerEntity player = context.getPlayer();
+
+        if (canBeCached(EntityType.ENDER_DRAGON)
+                && samplerTierSufficient(stack, EntityType.ENDER_DRAGON)
+                && blockState.getBlock().getName().equals(Blocks.END_STONE.getName())){
+            CompoundNBT nbt = new CompoundNBT();
+            SerializationHelper.serializeEntityTypeNBT(nbt, EntityType.ENDER_DRAGON);
+            stack.setTag(nbt);
+            if (player != null){
+                player.setItemInHand(context.getHand(), stack);
+            }
+            return ActionResultType.SUCCESS;
+        }
+        return ActionResultType.PASS;
     }
 
     // Called on left click on an entity to get it's sample
@@ -43,6 +77,10 @@ public class DnaSamplerItem extends Item {
         }else{
             return false;
         }
+
+        return recordDNA(stack, target, player, hand);
+    }
+    private boolean recordDNA(ItemStack stack, LivingEntity target, PlayerEntity player, Hand hand){
         // Try to sample the target
         if (canBeCached(target) && !RecipesHelper.isEntityTypeBlacklisted(target.getType())) {
             if(samplerTierSufficient(stack, target)) {
@@ -66,9 +104,12 @@ public class DnaSamplerItem extends Item {
         return false;
     }
 
+
     // Checks if a sampler's tier is sufficient to sample given entity
     private static boolean samplerTierSufficient(ItemStack stack, Entity target) {
-        EntityType<?> type = target.getType();
+        return samplerTierSufficient(stack, target.getType());
+    }
+    private static boolean samplerTierSufficient(ItemStack stack, EntityType<?> type) {
         boolean sufficient = false;
         for(final IRecipe<?> recipe : RecipesHelper.getRecipes(RecipesHelper.MOB_RECIPE, RecipesHelper.getRecipeManager()).values()) {
             if(recipe instanceof MobData) {
@@ -97,13 +138,16 @@ public class DnaSamplerItem extends Item {
 
     // Check if entity can be cached based on the list of cachable entities
     private static boolean canBeCached(Entity clickedEntity) {
+        return canBeCached(clickedEntity.getType());
+    }
+    private static boolean canBeCached(EntityType<?> entityType) {
         boolean contains = false;
         for(final IRecipe<?> recipe : RecipesHelper.getRecipes(RecipesHelper.MOB_RECIPE, RecipesHelper.getRecipeManager()).values()) {
             if(recipe instanceof MobData) {
                 final MobData mobData = (MobData) recipe;
                 // Check for null exception
                 if(mobData.getEntityType() == null){continue;}
-                if(mobData.getEntityType().equals(clickedEntity.getType())) {
+                if(mobData.getEntityType().equals(entityType)) {
                     contains = true;
                     break;
                 }
@@ -111,7 +155,6 @@ public class DnaSamplerItem extends Item {
         }
         return contains;
     }
-
     @Override
     public ActionResult<ItemStack> use(World worldIn, PlayerEntity playerIn, Hand handIn) {
         ItemStack itemstack = playerIn.getItemInHand(handIn);

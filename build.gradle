@@ -97,6 +97,10 @@ minecraft {
 }
 // Additional compatible mods
 repositories {
+    mavenLocal()
+    maven {
+        url "https://cursemaven.com"
+    }
     maven { url 'https://api.modrinth.com/maven' }
     maven {
         // url of the maven that hosts Aquacultures files
@@ -134,27 +138,29 @@ repositories {
 sourceSets.main.resources { srcDir 'src/generated/resources' }
 
 dependencies {
-    minecraft 'net.minecraftforge:forge:1.16.5-36.1.0'
+    minecraft 'net.minecraftforge:forge:1.16.5-36.2.39'
 
     //Aquaculture2 (Helps with debugging mod entities. Thanks!)
-    compile fg.deobf("com.teammetallurgy.aquaculture:aquaculture2_1.16.5:1.16.5-2.1.16.1")
-
+//    implementation fg.deobf("com.teammetallurgy.aquaculture:aquaculture2_1.16.5:1.16.5-2.1.16.1")
+    implementation fg.deobf("curse.maven:aquaculture-60028:3216633")
     // JEI
     compileOnly fg.deobf("mezz.jei:jei-1.16.5:7.6.1.75:api")
     runtimeOnly fg.deobf("mezz.jei:jei-1.16.5:7.6.1.75")
 
     // HWYLA
 //    compileOnly fg.deobf("mcp.mobius.waila:Hwyla:1.10.11-B78_1.16.2:api")
+    implementation fg.deobf("curse.maven:hwyla-253449:3033593")
     // At runtime, use the full Hwyla jar
-    runtimeOnly fg.deobf("mcp.mobius.waila:Hwyla:1.10.11-B78_1.16.2")
+//    runtimeOnly fg.deobf("mcp.mobius.waila:Hwyla:1.10.11-B78_1.16.2")
 
     // The One Probe
-    compile fg.deobf("mcjty.theoneprobe:TheOneProbe-1.16:1.16-3.0.7-13") {
+    implementation fg.deobf("mcjty.theoneprobe:TheOneProbe-1.16:1.16-3.0.7-13") {
         transitive = false
     }
 
     // CraftTweaker
-    compile fg.deobf("com.blamejared.crafttweaker:CraftTweaker-1.16.5:7.1.0.193")
+//    implementation fg.deobf("com.blamejared.crafttweaker:CraftTweaker-1.16.5:7.1.0.193")
+    implementation fg.deobf("curse.maven:crafttweaker-239197:3268852")
 
 }
 
